@@ -1,11 +1,11 @@
-package fun.kaituo.tag5;
+package fun.kaituo.tagchurch;
 
 
-import fun.kaituo.Game;
-import fun.kaituo.PlayerQuitData;
-import fun.kaituo.event.PlayerChangeGameEvent;
-import fun.kaituo.event.PlayerEndGameEvent;
-import fun.kaituo.utils.ItemStackBuilder;
+import fun.kaituo.gameutils.Game;
+import fun.kaituo.gameutils.PlayerQuitData;
+import fun.kaituo.gameutils.event.PlayerChangeGameEvent;
+import fun.kaituo.gameutils.event.PlayerEndGameEvent;
+import fun.kaituo.gameutils.utils.ItemStackBuilder;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.*;
@@ -41,13 +41,12 @@ import org.bukkit.util.Vector;
 
 import java.util.*;
 
-import static fun.kaituo.GameUtils.*;
 
-public class Tag5Game extends Game implements Listener {
-    private static final Tag5Game instance = new Tag5Game((Tag5) Bukkit.getPluginManager().getPlugin("Tag5"));
+public class TagChurchGame extends Game implements Listener {
+    private static final TagChurchGame instance = new TagChurchGame((TagChurch) Bukkit.getPluginManager().getPlugin("TagChurch"));
     Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
     Scoreboard tag5 = Bukkit.getScoreboardManager().getNewScoreboard();
-    Tag5 plugin;
+    TagChurch plugin;
     List<Player> humans = new ArrayList<>();
     List<Player> devils = new ArrayList<>();
 
@@ -105,13 +104,13 @@ public class Tag5Game extends Game implements Listener {
 
     int totalWeight;
 
-    private Tag5Game(Tag5 plugin) {
+    private TagChurchGame(TagChurch plugin) {
         this.plugin = plugin;
-        initializeGame(plugin, "Tag5",  "§f教堂", new Location(world, 0.5, 25, -2022.5),
-                new BoundingBox(-200, -64, -1800, 200, 256, -2200));
+        initializeGame(plugin, "TagChurch",  "§f教堂", new Location(world, 0.5, 25, -2022.5));
         initializeButtons(new Location(world, 0, 26, -2031), BlockFace.SOUTH,
                 new Location(world, 0, 27, -2034), BlockFace.SOUTH);
-        players = Tag5.players;
+        initializeGameRunnable();
+        players = TagChurch.players;
         tag5.registerNewObjective("tag5", "dummy", "鬼抓人");
         tag5.getObjective("tag5").setDisplaySlot(DisplaySlot.SIDEBAR);
         for (int i : gadgetWeights) {
@@ -152,7 +151,7 @@ public class Tag5Game extends Game implements Listener {
         }
     }
 
-    public static Tag5Game getInstance() {
+    public static TagChurchGame getInstance() {
         return instance;
     }
 
@@ -757,33 +756,27 @@ public class Tag5Game extends Game implements Listener {
         }
     }
 
-    @EventHandler
-    public void onPlayerChangeGame(PlayerChangeGameEvent pcge) {
-        players.remove(pcge.getPlayer());
-        humans.remove(pcge.getPlayer());
-        devils.remove(pcge.getPlayer());
-    }
-
-    public void savePlayerQuitData(Player p) {
+    @Override
+    protected void quit(Player p) {
         PlayerQuitData quitData = new PlayerQuitData(p, this, gameUUID);
         quitData.getData().put("team", whichGroup(p));
-        setPlayerQuitData(p.getUniqueId(), quitData);
+        gameUtils.setPlayerQuitData(p.getUniqueId(), quitData);
         players.remove(p);
         humans.remove(p);
         devils.remove(p);
     }
 
     @Override
-    protected void rejoin(Player p) {
+    protected boolean rejoin(Player p) {
         if (!running) {
             p.sendMessage("§c游戏已经结束！");
-            return;
+            return false;
         }
-        if (!getPlayerQuitData(p.getUniqueId()).getGameUUID().equals(gameUUID)) {
+        if (!gameUtils.getPlayerQuitData(p.getUniqueId()).getGameUUID().equals(gameUUID)) {
             p.sendMessage("§c游戏已经结束！");
-            return;
+            return false;
         }
-        PlayerQuitData pqd = getPlayerQuitData(p.getUniqueId());
+        PlayerQuitData pqd = gameUtils.getPlayerQuitData(p.getUniqueId());
         pqd.restoreBasicData(p);
         players.add(p);
         team.addPlayer(p);
@@ -791,7 +784,21 @@ public class Tag5Game extends Game implements Listener {
         if (pqd.getData().get("team") != null) {
             ((List<Player>) pqd.getData().get("team")).add(p);
         }
-        setPlayerQuitData(p.getUniqueId(), null);
+        gameUtils.setPlayerQuitData(p.getUniqueId(), null);
+        return true;
+    }
+
+    @Override
+    protected boolean join(Player p) {
+        p.setBedSpawnLocation(hubLocation, true);
+        p.teleport(hubLocation);
+        scoreboard.getTeam("tag5norden").addPlayer(p);
+        return true;
+    }
+
+    @Override
+    protected void forceStop() {
+        endGame("§c游戏被强制终止", new ArrayList<>());
     }
 
     private List<Player> whichGroup(Player p) {
@@ -849,10 +856,9 @@ public class Tag5Game extends Game implements Listener {
         cancelGameTasks();
     }
 
-    @Override
-    protected void initializeGameRunnable() {
+    private void initializeGameRunnable() {
         gameRunnable = () -> {
-            gameTime = Tag5.gameTime;
+            gameTime = TagChurch.gameTime;
             team = tag5.registerNewTeam("tag5");
             team.setNameTagVisibility(NameTagVisibility.NEVER);
             team.setCanSeeFriendlyInvisibles(false);

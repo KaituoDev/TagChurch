@@ -1,6 +1,6 @@
 api-version: 1.13
-name: Tag5
-main: fun.kaituo.tag5.Tag5
-version: 1.0
+name: TagChurch
+main: fun.kaituo.tagchurch.TagChurch
+version: 1.2
 author: YFshadaow
 depend: [GameUtils]

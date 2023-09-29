@@ -1,23 +1,17 @@
-package fun.kaituo.tag5;
+package fun.kaituo.tagchurch;
 
 
-import fun.kaituo.GameUtils;
-import fun.kaituo.event.PlayerChangeGameEvent;
-import fun.kaituo.tag5.Tag5Game;
+import fun.kaituo.gameutils.GameUtils;
+import fun.kaituo.gameutils.event.PlayerChangeGameEvent;
 import org.bukkit.*;
-import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
 import org.bukkit.block.Sign;
-import org.bukkit.block.data.type.Fence;
-import org.bukkit.block.data.type.Gate;
-import org.bukkit.block.data.type.TrapDoor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -28,10 +22,9 @@ import org.bukkit.util.BoundingBox;
 import java.util.ArrayList;
 import java.util.List;
 
-import static fun.kaituo.GameUtils.unregisterGame;
-import static fun.kaituo.GameUtils.world;
 
-public class Tag5 extends JavaPlugin implements Listener {
+public class TagChurch extends JavaPlugin implements Listener {
+    private GameUtils gameUtils;
     static List<Player> players;
     static long gameTime;
     Scoreboard scoreboard;
@@ -51,8 +44,8 @@ public class Tag5 extends JavaPlugin implements Listener {
     List<Team> teams;
     BoundingBox box = new BoundingBox(-200, -64, -1800, 200, 256, -2200);
 
-    public static Tag5Game getGameInstance() {
-        return Tag5Game.getInstance();
+    public static TagChurchGame getGameInstance() {
+        return TagChurchGame.getInstance();
     }
 
     @EventHandler
@@ -96,8 +89,8 @@ public class Tag5 extends JavaPlugin implements Listener {
         if (!pie.getClickedBlock().getType().equals(Material.OAK_BUTTON)) {
             return;
         }
-        if (pie.getClickedBlock().getLocation().equals(new Location(world,0,26,-2031))) {
-            Tag5Game.getInstance().startGame();
+        if (pie.getClickedBlock().getLocation().equals(new Location(gameUtils.getWorld(),0,26,-2031))) {
+            TagChurchGame.getInstance().startGame();
         }
     }
     @EventHandler
@@ -134,7 +127,7 @@ public class Tag5 extends JavaPlugin implements Listener {
             sign.setLine(2,"当前时间为 " + gameTime/1200 + " 分钟");
             sign.update();
         }
-        if (Tag5Game.getInstance().running) {
+        if (TagChurchGame.getInstance().running) {
             return;
         }
         if (x == 2 && y == 25 && z == -2031) {
@@ -224,6 +217,8 @@ public class Tag5 extends JavaPlugin implements Listener {
         }
     }
     public void onEnable() {
+        gameUtils = (GameUtils) Bukkit.getPluginManager().getPlugin("GameUtils");
+
         saveDefaultConfig();
         scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
         players = new ArrayList<>();
@@ -244,10 +239,10 @@ public class Tag5 extends JavaPlugin implements Listener {
         teams = List.of(tag5norden,tag5cheshirecat, tag5redhat,tag5alice,tag5eunice,tag5dodo,tag5faketurtle,tag5victoria,tag5miranda,tag5hein,tag5lindamayer,tag5baphomet);
         Bukkit.getPluginManager().registerEvents(this, this);
         gameTime = 3600;
-        Sign sign = (Sign) world.getBlockAt(0, 25, -2031).getState();
+        Sign sign = (Sign) gameUtils.getWorld().getBlockAt(0, 25, -2031).getState();
         sign.setLine(2,"当前时间为 " + gameTime/1200 + " 分钟");
         sign.update();
-        GameUtils.registerGame(getGameInstance());
+        gameUtils.registerGame(getGameInstance());
     }
 
     public void onDisable() {
@@ -255,11 +250,11 @@ public class Tag5 extends JavaPlugin implements Listener {
         HandlerList.unregisterAll((Plugin)this);
         if (players.size() > 0) {
             for (Player p : players) {
-                p.teleport(new Location(world, 0.5,89.0,0.5));
+                p.teleport(new Location(gameUtils.getWorld(), 0.5,89.0,0.5));
                 Bukkit.getPluginManager().callEvent(new PlayerChangeGameEvent(p, getGameInstance(), null));
             }
         }
-        unregisterGame(getGameInstance());
+        gameUtils.unregisterGame(getGameInstance());
     }
 
     private void broadcastHumanChoiceMessage(Player player, String role, String color) {

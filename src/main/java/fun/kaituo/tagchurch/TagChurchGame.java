@@ -758,6 +758,9 @@ public class TagChurchGame extends Game implements Listener {
 
     @Override
     protected void quit(Player p) {
+        if (!players.contains(p)) {
+            return;
+        }
         PlayerQuitData quitData = new PlayerQuitData(p, this, gameUUID);
         quitData.getData().put("team", whichGroup(p));
         gameUtils.setPlayerQuitData(p.getUniqueId(), quitData);
@@ -798,7 +801,9 @@ public class TagChurchGame extends Game implements Listener {
 
     @Override
     protected void forceStop() {
-        endGame("§c游戏被强制终止", new ArrayList<>());
+        if (running) {
+            endGame("§c游戏被强制终止", new ArrayList<>());
+        }
     }
 
     private List<Player> whichGroup(Player p) {

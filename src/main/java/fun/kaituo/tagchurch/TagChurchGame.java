@@ -1095,11 +1095,11 @@ public class TagChurchGame extends Game implements Listener {
                         endGame("§e时间到，人类获胜！", humans);
                         return;
                     }
-                    if (humans.size() <= 0) {
+                    if (humans.isEmpty()) {
                         endGame("§e无人幸存，鬼获胜！", devils);
                         return;
                     }
-                    if (devils.size() <= 0) {
+                    if (devils.isEmpty()) {
                         endGame("§e鬼不复存在，人类获胜！", humans);
                         return;
                     }

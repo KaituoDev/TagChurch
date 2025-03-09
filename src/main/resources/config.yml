@@ -1,3 +1,13 @@
+characters:
+  Lindamayer:
+    attackCoolDownTicks: 60
+  Baphomet:
+    attackCoolDownTicks: 50
+  Hein:
+    attackCoolDownTicks: 50
+  Miranda:
+    attackCoolDownTicks: 110
+
 redhat:
   duration: 100
   regeneration-amplifier: 0

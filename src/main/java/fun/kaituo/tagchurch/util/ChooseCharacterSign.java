@@ -32,6 +32,9 @@ public class ChooseCharacterSign extends AbstractSignListener {
     @Override
     public void onRightClick(PlayerInteractEvent e) {
         Player chooser = e.getPlayer();
+        if (TagChurch.inst().playerCharacterChoices.get(chooser.getUniqueId()).equals(characterClass)) {
+            return;
+        }
         for (Player p : TagChurch.inst().getPlayers()) {
             p.sendMessage(
                     color + chooser.getName() + " " +

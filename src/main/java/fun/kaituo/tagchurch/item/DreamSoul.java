@@ -6,16 +6,17 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 @SuppressWarnings("unused")
-public class HoneyBeer extends ActiveItem {
+public class DreamSoul extends ActiveItem {
     @Override
     public Rarity getRarity() {
-        return Rarity.COMMON;
+        return Rarity.RARE;
     }
 
     @Override
     public boolean use(Player p) {
-        p.sendMessage("§e获得缓降！");
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 40, 0, false, false));
+        p.sendMessage("§a获得护盾生命值和隐身效果！");
+        p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 100, 0, false, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.ABSORPTION, -1, 1, false, false));
         return true;
     }
 }

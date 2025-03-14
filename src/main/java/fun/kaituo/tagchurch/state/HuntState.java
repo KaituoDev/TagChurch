@@ -2,6 +2,7 @@ package fun.kaituo.tagchurch.state;
 
 import fun.kaituo.gameutils.game.GameState;
 import fun.kaituo.tagchurch.TagChurch;
+import fun.kaituo.tagchurch.util.ActiveItem;
 import fun.kaituo.tagchurch.util.Corpse;
 import fun.kaituo.tagchurch.util.Item;
 import fun.kaituo.tagchurch.util.PlayerData;
@@ -29,6 +30,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static fun.kaituo.gameutils.util.Misc.spawnFireworks;
 import static fun.kaituo.tagchurch.util.Misc.isCharacterHuman;
@@ -119,8 +121,11 @@ public class HuntState implements GameState, Listener {
                 .scan()) {
 
             Set<Class<? extends Item>> itemClasses = new HashSet<>(scanResult
-                    .getSubclasses(Item.class.getName()) // 获取子类
-                    .loadClasses(Item.class));
+                    .getSubclasses(Item.class.getName())
+                    .loadClasses(Item.class))
+                    .stream()
+                    .filter(clazz -> !clazz.equals(ActiveItem.class))
+                    .collect(Collectors.toSet());
 
             for (Class<? extends Item> itemClass : itemClasses) {
                 Constructor<? extends Item> constructor = itemClass.getConstructor();

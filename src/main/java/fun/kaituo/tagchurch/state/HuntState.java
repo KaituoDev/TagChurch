@@ -3,7 +3,10 @@ package fun.kaituo.tagchurch.state;
 import fun.kaituo.gameutils.game.GameState;
 import fun.kaituo.tagchurch.TagChurch;
 import fun.kaituo.tagchurch.util.Corpse;
+import fun.kaituo.tagchurch.util.Item;
 import fun.kaituo.tagchurch.util.PlayerData;
+import io.github.classgraph.ClassGraph;
+import io.github.classgraph.ScanResult;
 import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
@@ -48,6 +51,8 @@ public class HuntState implements GameState, Listener {
     private Objective remainingTimeObjective;
     private Score remainingTimeScore;
     private final Set<Integer> taskIds = new HashSet<>();
+    private final Set<Item> items = new HashSet<>();
+
     @Getter
     private boolean isEnded = true;
     private final Set<Corpse> corpses = new HashSet<>();
@@ -59,6 +64,7 @@ public class HuntState implements GameState, Listener {
         waitBlock = game.getLoc("waitBlock");
         remainingTimeObjective = game.getTagBoard().registerNewObjective("remainingTime", Criteria.DUMMY, "鬼抓人");
         remainingTimeScore = remainingTimeObjective.getScore("剩余时间");
+        initItems();
     }
 
     @Override
@@ -85,12 +91,46 @@ public class HuntState implements GameState, Listener {
             p.teleport(start);
         }
         Bukkit.getPluginManager().registerEvents(this, game);
+        enableItems();
         taskIds.add(Bukkit.getScheduler().runTaskLater(game, () -> {
             removePlatform();
             for (Player p : game.getPlayers()) {
                 p.sendTitle(START_MESSAGE, "", 10, 30, 20);
             }
         }, HIDE_SECONDS * 20).getTaskId());
+    }
+
+    private void enableItems() {
+        for (Item item : items) {
+            item.enable();
+        }
+    }
+
+    private void disableItems() {
+        for (Item item : items) {
+            item.disable();
+        }
+    }
+
+    private void initItems() {
+        try (ScanResult scanResult = new ClassGraph()
+                .enableClassInfo()
+                .acceptPackages("fun.kaituo.tagchurch.item") // 指定扫描的包
+                .scan()) {
+
+            Set<Class<? extends Item>> itemClasses = new HashSet<>(scanResult
+                    .getSubclasses(Item.class.getName()) // 获取子类
+                    .loadClasses(Item.class));
+
+            for (Class<? extends Item> itemClass : itemClasses) {
+                Constructor<? extends Item> constructor = itemClass.getConstructor();
+                Item item = constructor.newInstance();
+                items.add(item);
+            }
+        } catch (Exception e) {
+            game.getLogger().warning("Failed to register");
+            throw new RuntimeException(e);
+        }
     }
 
     private void removePlatform() {
@@ -127,6 +167,7 @@ public class HuntState implements GameState, Listener {
         }
         game.idDataMap.clear();
         HandlerList.unregisterAll(this);
+        disableItems();
         for (int id : taskIds) {
             Bukkit.getScheduler().cancelTask(id);
         }

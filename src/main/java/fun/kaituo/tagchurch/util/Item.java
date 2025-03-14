@@ -1,20 +1,27 @@
 package fun.kaituo.tagchurch.util;
 
 import fun.kaituo.tagchurch.TagChurch;
+import io.papermc.paper.event.player.PlayerPickItemEvent;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.Action;
-import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import static fun.kaituo.tagchurch.util.Misc.isCharacterHuman;
+
 public abstract class Item implements Listener {
-    private final ItemStack item;
     public enum Rarity {
         COMMON, RARE, LEGENDARY
     }
+    protected final ItemStack item;
+    protected final Set<Integer> taskIds = new HashSet<>();
 
     public Item() {
         item = TagChurch.inst().getItem(this.getClass().getSimpleName());
@@ -28,33 +35,37 @@ public abstract class Item implements Listener {
 
     public void disable() {
         HandlerList.unregisterAll(this);
-    }
-
-    public boolean use(Player p) {
-        return false;
+        taskIds.forEach(Bukkit.getScheduler()::cancelTask);
+        taskIds.clear();
     }
 
     @EventHandler
-    public void onUse(PlayerInteractEvent e) {
+    public void preventHunterPickUp(PlayerPickItemEvent e) {
         Player p = e.getPlayer();
-        if (!TagChurch.inst().getPlayers().contains(p)) {
+        if (!TagChurch.inst().playerIds.contains(p.getUniqueId())) {
             return;
         }
-        if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
+        PlayerData data = TagChurch.inst().idDataMap.get(p.getUniqueId());
+        if (data == null) {
             return;
         }
-        ItemStack handItem = p.getInventory().getItemInMainHand().clone();
-        if (!handItem.isSimilar(item)) {
+        if (!isCharacterHuman(data.getClass())) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void preventHunterClick(InventoryClickEvent e) {
+        HumanEntity entity = e.getWhoClicked();
+        if (!TagChurch.inst().playerIds.contains(entity.getUniqueId())) {
             return;
         }
-        if (!use(p)) {
+        PlayerData data = TagChurch.inst().idDataMap.get(entity.getUniqueId());
+        if (data == null) {
             return;
         }
-        if (handItem.getAmount() == 1) {
-            p.getInventory().setItemInMainHand(null);
-        } else {
-            handItem.setAmount(handItem.getAmount() - 1);
-            p.getInventory().setItemInMainHand(handItem);
+        if (!isCharacterHuman(data.getClass())) {
+            e.setCancelled(true);
         }
     }
 }

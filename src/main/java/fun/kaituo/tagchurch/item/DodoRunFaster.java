@@ -6,7 +6,7 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 @SuppressWarnings("unused")
-public class HoneyBeer extends ActiveItem {
+public class DodoRunFaster extends ActiveItem {
     @Override
     public Rarity getRarity() {
         return Rarity.COMMON;
@@ -14,8 +14,8 @@ public class HoneyBeer extends ActiveItem {
 
     @Override
     public boolean use(Player p) {
-        p.sendMessage("§e获得缓降！");
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 40, 0, false, false));
+        p.sendMessage("§b获得加速！");
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1, false, false));
         return true;
     }
 }

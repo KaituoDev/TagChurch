@@ -17,7 +17,7 @@ public class StarPotion extends ActiveItem {
     @Override
     public boolean use(Player p) {
         p.sendMessage("§c30秒内无敌，30秒后将被强制击倒！");
-        p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 600, 4, false, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 600, 4));
         taskIds.add(Bukkit.getScheduler().runTaskLater(TagChurch.inst(), () -> p.setHealth(0), 600).getTaskId());
         return true;
     }

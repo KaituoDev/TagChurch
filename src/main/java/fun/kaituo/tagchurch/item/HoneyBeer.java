@@ -15,7 +15,7 @@ public class HoneyBeer extends ActiveItem {
     @Override
     public boolean use(Player p) {
         p.sendMessage("§e获得缓降！");
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 40, 0, false, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SLOW_FALLING, 40, 0));
         return true;
     }
 }

@@ -8,6 +8,7 @@ import org.bukkit.SoundCategory;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 
 public class Human extends PlayerData{
     public Human(Player p) {
@@ -29,11 +30,27 @@ public class Human extends PlayerData{
             }
         }
         if (minDistance < 10) {
-            player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.PLAYERS, 2f, 0f);
-            Bukkit.getScheduler().runTaskLater(TagChurch.inst(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.PLAYERS, 2f, 0f), 3);
+            player.getWorld().playSound(player, Sound.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.PLAYERS, 1f, 0f);
+            Bukkit.getScheduler().runTaskLater(TagChurch.inst(), () -> {
+                if (player == null) {
+                    return;
+                }
+                player.getWorld().playSound(player, Sound.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.PLAYERS, 1f, 0f);
+            }, 3);
         }
-        if (minDistance < 5) {Bukkit.getScheduler().runTaskLater(TagChurch.inst(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.PLAYERS, 2f, 0f), 10);
-            Bukkit.getScheduler().runTaskLater(TagChurch.inst(), () -> player.playSound(player.getLocation(), Sound.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.PLAYERS, 2f, 0f), 13);
+        if (minDistance < 5) {
+            Bukkit.getScheduler().runTaskLater(TagChurch.inst(), () -> {
+                if (player == null) {
+                    return;
+                }
+                player.getWorld().playSound(player, Sound.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.PLAYERS, 1f, 0f);
+            }, 10);
+            Bukkit.getScheduler().runTaskLater(TagChurch.inst(), () -> {
+                if (player == null) {
+                    return;
+                }
+                player.getWorld().playSound(player, Sound.BLOCK_NOTE_BLOCK_BASEDRUM, SoundCategory.PLAYERS, 1f, 0f);
+            }, 13);
         }
     }
 
@@ -48,6 +65,17 @@ public class Human extends PlayerData{
             return;
         }
         if (victimData instanceof Human) {
+            e.setCancelled(true);
+        }
+    }
+
+    @EventHandler
+    public void preventHealthRegain(EntityRegainHealthEvent e) {
+        if (!e.getEntity().getUniqueId().equals(player.getUniqueId())) {
+            return;
+        }
+        if (e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.SATIATED) ||
+            e.getRegainReason().equals(EntityRegainHealthEvent.RegainReason.EATING)) {
             e.setCancelled(true);
         }
     }

@@ -22,7 +22,7 @@ public class DodoRun extends ActiveItem {
         assert dodoRunFaster != null;
         p.getInventory().addItem(dodoRunFaster);
         p.sendMessage("§b获得加速！");
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 0, false, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 200, 0));
 
         PlayerData data = TagChurch.inst().idDataMap.get(p.getUniqueId());
         assert data != null;

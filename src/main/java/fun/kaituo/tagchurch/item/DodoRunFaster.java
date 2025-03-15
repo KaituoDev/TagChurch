@@ -15,7 +15,7 @@ public class DodoRunFaster extends ActiveItem {
     @Override
     public boolean use(Player p) {
         p.sendMessage("§b获得加速！");
-        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1, false, false));
+        p.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 100, 1));
         return true;
     }
 }

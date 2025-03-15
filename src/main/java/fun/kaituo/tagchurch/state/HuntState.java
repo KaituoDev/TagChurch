@@ -57,7 +57,7 @@ public class HuntState implements GameState, Listener {
 
     @Getter
     private boolean isEnded = true;
-    private final Set<Corpse> corpses = new HashSet<>();
+    public final Set<Corpse> corpses = new HashSet<>();
 
     public void init() {
         game = TagChurch.inst();

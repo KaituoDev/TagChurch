@@ -28,7 +28,11 @@ public class PocketWatch extends Item {
         if (!TagChurch.inst().playerIds.contains(p.getUniqueId())) {
             return;
         }
+        if (e.getDamage() < 7) {
+            return;
+        }
         if (containsItem(p.getInventory(), item)) {
+            p.sendMessage("§b怀表抵消了本次伤害！");
             e.setCancelled(true);
             removeItem(p.getInventory(), item);
         }

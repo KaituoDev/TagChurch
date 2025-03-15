@@ -6,16 +6,16 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
 @SuppressWarnings("unused")
-public class DirtyLiquid extends ActiveItem {
+public class InvisibleBody extends ActiveItem {
     @Override
     public Rarity getRarity() {
-        return Rarity.COMMON;
+        return Rarity.RARE;
     }
+
     @Override
     public boolean use(Player p) {
-        p.sendMessage("§a获得生命恢复和§c反胃效果！");
-        p.addPotionEffect(new PotionEffect(PotionEffectType.REGENERATION,  150, 1));
-        p.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA,  300, 0));
+        p.sendMessage("§c隐身10秒！");
+        p.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, 200, 0, false, false));
         return true;
     }
 }

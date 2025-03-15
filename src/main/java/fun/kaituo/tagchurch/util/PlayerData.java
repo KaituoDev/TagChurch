@@ -29,6 +29,7 @@ public abstract class PlayerData implements Listener {
     protected Location location;
     protected final Collection<PotionEffect> potionEffects = new ArrayList<>();
     protected double health;
+    protected double maxHealth;
     protected GameInventory inventory;
     protected long maxCoolDownTicks;
     protected long coolDownTicks;
@@ -52,6 +53,7 @@ public abstract class PlayerData implements Listener {
         for (PotionEffect effect : player.getActivePotionEffects()) {
             player.removePotionEffect(effect.getType());
         }
+        player.setMaxHealth(20);
         player.setHealth(20);
         player.setFoodLevel(20);
         player.setSaturation(5);
@@ -63,6 +65,7 @@ public abstract class PlayerData implements Listener {
         location = player.getLocation();
         potionEffects.clear();
         potionEffects.addAll(player.getActivePotionEffects());
+        maxHealth = player.getMaxHealth();
         health = player.getHealth();
         inventory = new GameInventory(player);
     }
@@ -120,6 +123,7 @@ public abstract class PlayerData implements Listener {
         this.player = p;
         p.teleport(location);
         p.addPotionEffects(potionEffects);
+        p.setMaxHealth(maxHealth);
         p.setHealth(health);
         inventory.apply(p);
         Bukkit.getPluginManager().registerEvents(this, TagChurch.inst());

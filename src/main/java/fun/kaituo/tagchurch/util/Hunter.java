@@ -46,8 +46,8 @@ public class Hunter extends PlayerData{
         if (victimData instanceof Hunter) {
             e.setCancelled(true);
         } else if (victimData instanceof Human) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, getAttackCoolDownTicks(), 99, false, false));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, getAttackCoolDownTicks(), 4, false, false));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, getAttackCoolDownTicks(), 99));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, getAttackCoolDownTicks(), 4));
         }
     }
 }

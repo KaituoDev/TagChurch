@@ -31,10 +31,10 @@ public class PocketWatch extends Item {
         if (e.getDamage() < 7) {
             return;
         }
-        if (containsItem(p.getInventory(), item)) {
+        if (containsItem(p.getInventory(), itemStack)) {
             p.sendMessage("§b怀表抵消了本次伤害！");
             e.setCancelled(true);
-            removeItem(p.getInventory(), item);
+            removeItem(p.getInventory(), itemStack);
         }
     }
 }

@@ -22,17 +22,17 @@ public abstract class ActiveItem extends Item{
             return;
         }
         ItemStack handItem = p.getInventory().getItemInMainHand().clone();
-        if (!handItem.isSimilar(item)) {
+        if (!handItem.isSimilar(itemStack)) {
             return;
         }
         // Prevent player from using items such as experience bottles
         e.setCancelled(true);
-        if (p.hasCooldown(item.getType())) {
+        if (p.hasCooldown(itemStack.getType())) {
             return;
         }
         if (use(p)) {
-            removeItem(p.getInventory(), item);
-            p.setCooldown(item.getType(), 10);
+            removeItem(p.getInventory(), itemStack);
+            p.setCooldown(itemStack.getType(), 10);
         }
     }
 }

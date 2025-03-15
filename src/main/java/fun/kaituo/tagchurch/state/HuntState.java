@@ -5,29 +5,39 @@ import fun.kaituo.tagchurch.TagChurch;
 import fun.kaituo.tagchurch.util.ActiveItem;
 import fun.kaituo.tagchurch.util.Corpse;
 import fun.kaituo.tagchurch.util.Item;
+import fun.kaituo.tagchurch.util.LootChest;
 import fun.kaituo.tagchurch.util.PlayerData;
 import io.github.classgraph.ClassGraph;
 import io.github.classgraph.ScanResult;
 import lombok.Getter;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Criteria;
 import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
+import org.bukkit.scoreboard.Team;
+import org.bukkit.util.BoundingBox;
 
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -53,7 +63,21 @@ public class HuntState implements GameState, Listener {
     private Objective remainingTimeObjective;
     private Score remainingTimeScore;
     private final Set<Integer> taskIds = new HashSet<>();
-    private final Set<Item> items = new HashSet<>();
+    public final Set<Item> items = new HashSet<>();
+
+    private final Set<Item> commonItems = new HashSet<>();
+    private final Set<Item> rareItems = new HashSet<>();
+    private final Set<Item> legendaryItems = new HashSet<>();
+
+    private final Set<LootChest> chests = new HashSet<>();
+    @Getter
+    private Team white;
+    @Getter
+    private Team aqua;
+    @Getter
+    private Team yellow;
+
+    private final Random random = new Random();
 
     @Getter
     private boolean isEnded = true;
@@ -67,6 +91,7 @@ public class HuntState implements GameState, Listener {
         remainingTimeObjective = game.getTagBoard().registerNewObjective("remainingTime", Criteria.DUMMY, "鬼抓人");
         remainingTimeScore = remainingTimeObjective.getScore("剩余时间");
         initItems();
+        initChests();
     }
 
     @Override
@@ -95,12 +120,53 @@ public class HuntState implements GameState, Listener {
         }
         Bukkit.getPluginManager().registerEvents(this, game);
         enableItems();
+        enableChests();
         taskIds.add(Bukkit.getScheduler().runTaskLater(game, () -> {
             removePlatform();
             for (Player p : game.getPlayers()) {
                 p.sendTitle(START_MESSAGE, "", 10, 30, 20);
             }
         }, HIDE_SECONDS * 20).getTaskId());
+    }
+
+    private void initChests() {
+        Location pos1 = game.getLoc("pos1");
+        Location pos2 = game.getLoc("pos2");
+        assert pos1 != null;
+        assert pos2 != null;
+        BoundingBox box = new BoundingBox(pos1.getBlockX(), pos1.getBlockY(), pos1.getBlockZ(),
+                pos2.getBlockX(), pos2.getBlockY(), pos2.getBlockZ());
+        for (int x = (int) box.getMinX(); x <= box.getMaxX(); x += 1) {
+            for (int y = (int) box.getMinY(); y <= box.getMaxY(); y += 1) {
+                for (int z = (int) box.getMinZ(); z <= box.getMaxZ(); z += 1) {
+                    World world = pos1.getWorld();
+                    Block b = world.getBlockAt(x, y, z);
+                    if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+                        chests.add(new LootChest(new Location(world, x, y, z)));
+                    }
+                }
+            }
+        }
+
+        white = game.getTagBoard().registerNewTeam("white");
+        white.setColor(ChatColor.WHITE);
+        aqua = game.getTagBoard().registerNewTeam("aqua");
+        aqua.setColor(ChatColor.AQUA);
+        yellow = game.getTagBoard().registerNewTeam("yellow");
+        yellow.setColor(ChatColor.YELLOW);
+
+    }
+
+    private void enableChests() {
+        for (LootChest chest : chests) {
+            chest.enable();
+        }
+    }
+
+    private void disableChests() {
+        for (LootChest chest : chests) {
+            chest.disable();
+        }
     }
 
     private void enableItems() {
@@ -132,6 +198,20 @@ public class HuntState implements GameState, Listener {
                 Constructor<? extends Item> constructor = itemClass.getConstructor();
                 Item item = constructor.newInstance();
                 items.add(item);
+                if (!item.canObtainDirectly()) {
+                    continue;
+                }
+                switch (item.getRarity()) {
+                    case COMMON:
+                        commonItems.add(item);
+                        break;
+                    case RARE:
+                        rareItems.add(item);
+                        break;
+                    case LEGENDARY:
+                        legendaryItems.add(item);
+                        break;
+                }
             }
         } catch (Exception e) {
             game.getLogger().warning("Failed to register");
@@ -153,6 +233,33 @@ public class HuntState implements GameState, Listener {
                 waitBlock.getWorld().getBlockAt(x, waitBlock.getBlockY(), z).setType(Material.BLACK_CONCRETE);
             }
         }
+    }
+
+    private <T> T getRandomElement(Set<T> set) {
+        if (set == null || set.isEmpty()) {
+            throw new IllegalArgumentException("Set cannot be null or empty");
+        }
+        List<T> list = new ArrayList<>(set); // 转换为 List
+        Random random = new Random();
+        return list.get(random.nextInt(list.size())); // 随机索引访问
+    }
+
+    public ItemStack getRandomItem() {
+        int commonWeight = 6;
+        int rareWeight = 3;
+        int legendaryWeight = 1;
+        int totalWeight = commonWeight + rareWeight + legendaryWeight;
+        int randomInt = random.nextInt(totalWeight);
+        Set<Item> itemSet;
+        if (randomInt < commonWeight) {
+            itemSet = commonItems;
+        } else if (randomInt < commonWeight + rareWeight) {
+            itemSet = rareItems;
+        } else {
+            itemSet = legendaryItems;
+        }
+        Item item = getRandomElement(itemSet);
+        return item.getItemStack();
     }
 
     private void clearCorpses() {
@@ -177,6 +284,7 @@ public class HuntState implements GameState, Listener {
         game.idDataMap.clear();
         HandlerList.unregisterAll(this);
         disableItems();
+        disableChests();
         for (int id : taskIds) {
             Bukkit.getScheduler().cancelTask(id);
         }

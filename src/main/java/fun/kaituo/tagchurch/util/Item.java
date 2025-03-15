@@ -1,7 +1,6 @@
 package fun.kaituo.tagchurch.util;
 
 import fun.kaituo.tagchurch.TagChurch;
-import io.papermc.paper.event.player.PlayerPickItemEvent;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -9,6 +8,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.HashSet;
@@ -40,7 +40,10 @@ public abstract class Item implements Listener {
     }
 
     @EventHandler
-    public void preventHunterPickUp(PlayerPickItemEvent e) {
+    public void preventHunterPickUp(PlayerPickupItemEvent e) {
+        if (!e.getItem().getItemStack().isSimilar(item)) {
+            return;
+        }
         Player p = e.getPlayer();
         if (!TagChurch.inst().playerIds.contains(p.getUniqueId())) {
             return;
@@ -56,6 +59,9 @@ public abstract class Item implements Listener {
 
     @EventHandler
     public void preventHunterClick(InventoryClickEvent e) {
+        if (!e.getCurrentItem().isSimilar(item)) {
+            return;
+        }
         HumanEntity entity = e.getWhoClicked();
         if (!TagChurch.inst().playerIds.contains(entity.getUniqueId())) {
             return;

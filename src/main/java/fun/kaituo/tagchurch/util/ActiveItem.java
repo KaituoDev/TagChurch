@@ -27,8 +27,12 @@ public abstract class ActiveItem extends Item{
         }
         // Prevent player from using items such as experience bottles
         e.setCancelled(true);
+        if (p.hasCooldown(item.getType())) {
+            return;
+        }
         if (use(p)) {
             removeItem(p.getInventory(), item);
+            p.setCooldown(item.getType(), 10);
         }
     }
 }

@@ -31,16 +31,16 @@ public abstract class PlayerData implements Listener {
     protected double health;
     protected double maxHealth;
     protected GameInventory inventory;
-    protected long maxCoolDownTicks;
-    protected long coolDownTicks;
+    protected long maxCooldownTicks;
+    protected long cooldownTicks;
 
     protected final Set<Integer> taskIds = new HashSet<>();
 
     public PlayerData(Player player) {
         playerId = player.getUniqueId();
         this.player = player;
-        maxCoolDownTicks = getConfigLong("cd");
-        coolDownTicks = 0;
+        maxCooldownTicks = getConfigLong("cd");
+        cooldownTicks = 0;
         applyInventory();
         applyPotionEffects();
         player.setHealth(20);
@@ -94,16 +94,16 @@ public abstract class PlayerData implements Listener {
     }
 
     public void tick() {
-        if (maxCoolDownTicks == 0) {
+        if (maxCooldownTicks == 0) {
             player.setLevel(0);
             player.setExp(0);
             return;
         }
-        if (coolDownTicks > 0) {
-            coolDownTicks -= 1;
+        if (cooldownTicks > 0) {
+            cooldownTicks -= 1;
         }
-        player.setLevel((int) Math.ceil ((double) coolDownTicks / 20));
-        player.setExp((1f - (float) coolDownTicks / maxCoolDownTicks));
+        player.setLevel((int) Math.ceil ((double) cooldownTicks / 20));
+        player.setExp((1f - (float) cooldownTicks / maxCooldownTicks));
     }
 
     public void onQuit() {
@@ -153,16 +153,16 @@ public abstract class PlayerData implements Listener {
     }
 
     public void tryCastSkill() {
-        if (maxCoolDownTicks == 0) {
+        if (maxCooldownTicks == 0) {
             player.sendMessage("§c你没有技能！");
             return;
         }
-        if (coolDownTicks > 0) {
+        if (cooldownTicks > 0) {
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, new TextComponent("§c§l技能冷却中！"));
             return;
         }
         if (castSkill()) {
-            coolDownTicks = maxCoolDownTicks;
+            cooldownTicks = maxCooldownTicks;
         }
     }
 

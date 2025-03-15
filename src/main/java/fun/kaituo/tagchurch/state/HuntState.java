@@ -2,6 +2,7 @@ package fun.kaituo.tagchurch.state;
 
 import fun.kaituo.gameutils.game.GameState;
 import fun.kaituo.tagchurch.TagChurch;
+import fun.kaituo.tagchurch.character.Alice;
 import fun.kaituo.tagchurch.util.ActiveItem;
 import fun.kaituo.tagchurch.util.Corpse;
 import fun.kaituo.tagchurch.util.Item;
@@ -302,7 +303,13 @@ public class HuntState implements GameState, Listener {
         if (data == null) {
             return;
         }
-        corpses.add(new Corpse(data));
+        if (data.getClass().equals(Alice.class) && ((Alice) data).hasUsedRevival()) {
+            for (Player player : TagChurch.inst().getPlayers()) {
+                player.sendMessage("§f" + p.getName() + " §c 被逐出了箱庭！");
+            }
+        } else {
+            corpses.add(new Corpse(data));
+        }
         data.onDestroy();
         game.idDataMap.remove(p.getUniqueId());
         p.setGameMode(GameMode.SPECTATOR);

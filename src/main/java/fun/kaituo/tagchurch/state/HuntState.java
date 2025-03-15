@@ -16,6 +16,8 @@ import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.Sound;
+import org.bukkit.SoundCategory;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -126,6 +128,7 @@ public class HuntState implements GameState, Listener {
             removePlatform();
             for (Player p : game.getPlayers()) {
                 p.sendTitle(START_MESSAGE, "", 10, 30, 20);
+                p.playSound(p, Sound.ENTITY_ENDER_DRAGON_GROWL, SoundCategory.PLAYERS, 1, 1);
             }
         }, HIDE_SECONDS * 20).getTaskId());
     }

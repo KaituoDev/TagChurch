@@ -85,6 +85,7 @@ public class HuntState implements GameState, Listener {
                 throw new RuntimeException(e);
             }
             game.idDataMap.put(p.getUniqueId(), data);
+            game.getTagTeam().addPlayer(p);
         }
         for (Player p : getHunters()) {
             p.teleport(wait);
@@ -169,6 +170,9 @@ public class HuntState implements GameState, Listener {
             if (data != null) {
                 data.onDestroy();
             }
+            Player p = Bukkit.getPlayer(id);
+            assert p != null;
+            game.getTagTeam().removePlayer(p);
         }
         game.idDataMap.clear();
         HandlerList.unregisterAll(this);
@@ -279,6 +283,7 @@ public class HuntState implements GameState, Listener {
 
     @Override
     public void addPlayer(Player p) {
+        game.getTagTeam().addPlayer(p);
         PlayerData data = game.idDataMap.get(p.getUniqueId());
         if (data != null) {
             data.onRejoin();
@@ -290,6 +295,7 @@ public class HuntState implements GameState, Listener {
 
     @Override
     public void removePlayer(Player p) {
+        game.getTagTeam().removePlayer(p);
         PlayerData data = game.idDataMap.get(p.getUniqueId());
         if (data != null) {
             data.onQuit();

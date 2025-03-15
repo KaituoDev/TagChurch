@@ -25,7 +25,7 @@ public class Revival extends ActiveItem {
         if (!TagChurch.inst().playerIds.contains(p.getUniqueId())) {
             return;
         }
-        if (!p.getInventory().getItemInMainHand().isSimilar(item)) {
+        if (!p.getInventory().getItemInMainHand().isSimilar(itemStack)) {
             return;
         }
         Entity entity = e.getRightClicked();
@@ -37,7 +37,7 @@ public class Revival extends ActiveItem {
                 continue;
             }
             if (corpse.revive()) {
-                removeItem(p.getInventory(), item);
+                removeItem(p.getInventory(), itemStack);
                 return;
             }
         }

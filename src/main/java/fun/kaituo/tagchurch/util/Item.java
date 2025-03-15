@@ -1,6 +1,8 @@
 package fun.kaituo.tagchurch.util;
 
 import fun.kaituo.tagchurch.TagChurch;
+import fun.kaituo.tagchurch.state.HuntState;
+import lombok.Getter;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
@@ -11,6 +13,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.ItemStack;
 
+import javax.annotation.Nullable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,14 +23,28 @@ public abstract class Item implements Listener {
     public enum Rarity {
         COMMON, RARE, LEGENDARY
     }
-    protected final ItemStack item;
+    @Getter
+    protected final ItemStack itemStack;
     protected final Set<Integer> taskIds = new HashSet<>();
 
     public Item() {
-        item = TagChurch.inst().getItem(this.getClass().getSimpleName());
+        itemStack = TagChurch.inst().getItem(this.getClass().getSimpleName());
+    }
+
+    public static @Nullable Item getItem(ItemStack itemStack) {
+        for (Item item : HuntState.INST.items) {
+            if (item.itemStack.isSimilar(itemStack)) {
+                return item;
+            }
+        }
+        return null;
     }
 
     public abstract Rarity getRarity();
+
+    public boolean canObtainDirectly() {
+        return true;
+    }
 
     public void enable() {
         Bukkit.getPluginManager().registerEvents(this, TagChurch.inst());
@@ -41,7 +58,7 @@ public abstract class Item implements Listener {
 
     @EventHandler
     public void preventHunterPickUp(PlayerPickupItemEvent e) {
-        if (!e.getItem().getItemStack().isSimilar(item)) {
+        if (!e.getItem().getItemStack().isSimilar(itemStack)) {
             return;
         }
         Player p = e.getPlayer();
@@ -59,7 +76,11 @@ public abstract class Item implements Listener {
 
     @EventHandler
     public void preventHunterClick(InventoryClickEvent e) {
-        if (!e.getCurrentItem().isSimilar(item)) {
+        ItemStack currentItem = e.getCurrentItem();
+        if (currentItem == null) {
+            return;
+        }
+        if (!currentItem.isSimilar(itemStack)) {
             return;
         }
         HumanEntity entity = e.getWhoClicked();

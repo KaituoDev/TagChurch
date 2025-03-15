@@ -13,8 +13,8 @@ public class Hunter extends PlayerData{
         super(p);
     }
 
-    public int getAttackCoolDownTicks() {
-        return getConfigInt("attackCoolDownTicks");
+    public int getAttackCooldownTicks() {
+        return getConfigInt("attack-cooldown-ticks");
     }
 
     @Override
@@ -25,7 +25,7 @@ public class Hunter extends PlayerData{
     }
 
     @EventHandler
-    public void preventJumpDuringAttackCoolDown(PlayerJumpEvent e) {
+    public void preventJumpDuringAttackCooldown(PlayerJumpEvent e) {
         if (!e.getPlayer().getUniqueId().equals(playerId)) {
             return;
         }
@@ -46,8 +46,8 @@ public class Hunter extends PlayerData{
         if (victimData instanceof Hunter) {
             e.setCancelled(true);
         } else if (victimData instanceof Human) {
-            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, getAttackCoolDownTicks(), 99));
-            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, getAttackCoolDownTicks(), 4));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.WEAKNESS, getAttackCooldownTicks(), 99));
+            player.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, getAttackCooldownTicks(), 4));
         }
     }
 }

@@ -1,85 +1,36 @@
 characters:
   Lindamayer:
-    attackCoolDownTicks: 60
+    attack-cooldown-ticks: 60
+    cd: 1800
+    glowing-duration: 100
   Baphomet:
-    attackCoolDownTicks: 50
+    attack-cooldown-ticks: 50
   Hein:
-    attackCoolDownTicks: 50
+    attack-cooldown-ticks: 50
+    wither-duration: 60
   Miranda:
-    attackCoolDownTicks: 110
-
-redhat:
-  duration: 100
-  regeneration-amplifier: 0
-  resistance-amplifier: 0
-chechirecat:
-  speed-duration: 60
-  speed-amplifier: 0
-eunice:
-  duration: 100
-  cd: 1200
-dodo:
-  speed-duration: 60
-faketurtle:
-  resistance-amplifier: 1
-  slowness-amplifier: 1
-  invisibility-duration: 100
-  jump-amplifier: 1
-victoria:
-  radiusX: 5
-  radiusY: 5
-  radiusZ: 5
-respawn-chest-locations:
-  1:
-    x: 4
-    y: 79
-    z: -2000
-  2:
-    x: -4
-    y: 79
-    z: -2000
-chest-locations:
-  1:
-    x: 0
-    y: 78
-    z: -2001
-  2:
-    x: 0
-    y: 75
-    z: -2025
-  3:
-    x: 0
-    y: 73
-    z: -2040
-  4:
-    x: -11
-    y: 87
-    z: -2023
-  5:
-    x: 11
-    y: 87
-    z: -2023
-  6:
-    x: 15
-    y: 69
-    z: -2023
-  7:
-    x: -9
-    y: 72
-    z: -2041
-  8:
-    x: -7
-    y: 70
-    z: -2018
-  9:
-    x: 5
-    y: 70
-    z: -2011
-  10:
-    x: 0
-    y: 94
-    z: -2023
-  11:
-    x: -1
-    y: 69
-    z: -2027
+    attack-cooldown-ticks: 110
+    pearl-cooldown: 600
+  RedHat:
+    duration: 100
+    regeneration-amplifier: 0
+    resistance-amplifier: 0
+  Victoria:
+    cd: 1
+    radius: 5
+  Dodo:
+    speed-duration: 60
+  CheshireCat:
+    speed-duration: 60
+    speed-amplifier: 0
+  Eunice:
+    cd: 2000
+    duration: 200
+    speed-amplifier: 1
+    regeneration-amplifier: 1
+  FakeTurtle:
+    resistance-amplifier: 1
+    slowness-amplifier: 1
+    jump-amplifier: 1
+    soup-cooldown: 1800
+    invisibility-duration: 100

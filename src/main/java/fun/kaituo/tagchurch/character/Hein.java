@@ -1,7 +1,10 @@
 package fun.kaituo.tagchurch.character;
 
+import fun.kaituo.tagchurch.state.HuntState;
 import fun.kaituo.tagchurch.util.Hunter;
 import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.entity.EntityPotionEffectEvent;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -11,8 +14,11 @@ public class Hein extends Hunter {
     public static final String chooseMessage = "这里满溢着大量的黑之魂！太棒了！";
     public static final String color = "§8";
 
+    private final int witherDuration;
+
     public Hein(Player p) {
         super(p);
+        witherDuration = getConfigInt("wither-duration");
     }
 
     @Override
@@ -20,5 +26,24 @@ public class Hein extends Hunter {
         super.applyPotionEffects();
         player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, -1, 1, false, false));
         player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, -1, 0, false, false));
+    }
+
+    @EventHandler
+    public void onPotionEffect(EntityPotionEffectEvent e) {
+        if (!(e.getEntity() instanceof Player victim)) {
+            return;
+        }
+        if (!HuntState.INST.getHumans().contains(victim)) {
+            return;
+        }
+        PotionEffect newEffect = e.getNewEffect();
+        if (e.getNewEffect() == null) {
+            return;
+        }
+        if (!e.getNewEffect().getType().equals(PotionEffectType.GLOWING)) {
+            return;
+        }
+        victim.addPotionEffect(new PotionEffect(PotionEffectType.WITHER, witherDuration, 0));
+        victim.sendMessage("§c海因使你获得凋零效果！");
     }
 }

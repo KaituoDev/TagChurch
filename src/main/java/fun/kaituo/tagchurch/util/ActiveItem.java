@@ -1,6 +1,8 @@
 package fun.kaituo.tagchurch.util;
 
 import fun.kaituo.tagchurch.TagChurch;
+import org.bukkit.Material;
+import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
@@ -20,6 +22,13 @@ public abstract class ActiveItem extends Item{
         }
         if (!e.getAction().equals(Action.RIGHT_CLICK_BLOCK) && !e.getAction().equals(Action.RIGHT_CLICK_AIR)) {
             return;
+        }
+        if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
+            Block b = e.getClickedBlock();
+            assert b != null;
+            if (b.getType().equals(Material.CHEST) || b.getType().equals(Material.TRAPPED_CHEST)) {
+                return;
+            }
         }
         ItemStack handItem = p.getInventory().getItemInMainHand().clone();
         if (!handItem.isSimilar(itemStack)) {

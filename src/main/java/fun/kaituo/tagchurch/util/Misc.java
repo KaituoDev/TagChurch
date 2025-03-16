@@ -1,5 +1,7 @@
 package fun.kaituo.tagchurch.util;
 
+import org.bukkit.ChatColor;
+
 public class Misc {
     public static String getCharacterDisplayName(Class<? extends PlayerData> characterClass) {
         try {
@@ -17,9 +19,9 @@ public class Misc {
         }
     }
 
-    public static String getCharacterColor(Class<? extends PlayerData> characterClass) {
+    public static ChatColor getCharacterColor(Class<? extends PlayerData> characterClass) {
         try {
-            return (String) characterClass.getField("color").get(null);
+            return (ChatColor) characterClass.getField("color").get(null);
         } catch (NoSuchFieldException | IllegalAccessException e) {
             throw new RuntimeException("Failed to get static field color from " + characterClass.getSimpleName());
         }

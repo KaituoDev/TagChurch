@@ -1,6 +1,7 @@
 package fun.kaituo.tagchurch.character;
 
 import fun.kaituo.tagchurch.util.Human;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -13,7 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 public class RedHat extends Human {
     public static final String displayName = "小红帽";
     public static final String chooseMessage = ".......好了,我们出发吧";
-    public static final String color = "§c";
+    public static final ChatColor color = ChatColor.RED;
 
     private final int duration;
     private final int regenerationAmplifier;

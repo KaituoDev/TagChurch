@@ -2,6 +2,7 @@ package fun.kaituo.tagchurch.character;
 
 import fun.kaituo.tagchurch.TagChurch;
 import fun.kaituo.tagchurch.util.Human;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -11,7 +12,7 @@ import org.bukkit.potion.PotionEffectType;
 public class FakeTurtle extends Human {
     public static final String displayName = "假海龟";
     public static final String chooseMessage = "是呢...只要有你在就没什么可怕的了......";
-    public static final String color = "§3";
+    public static final ChatColor color = ChatColor.DARK_AQUA;
 
     private final int resistanceAmplifier;
     private final int slownessAmplifier;

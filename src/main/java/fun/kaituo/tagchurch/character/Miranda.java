@@ -1,6 +1,7 @@
 package fun.kaituo.tagchurch.character;
 
 import fun.kaituo.tagchurch.util.Hunter;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -9,7 +10,7 @@ import org.bukkit.inventory.ItemStack;
 public class Miranda extends Hunter {
     public static final String displayName = "米兰达";
     public static final String chooseMessage = "总有一天，这个虚假的世界会迎来崩坏的时刻......";
-    public static final String color = "§8";
+    public static final ChatColor color = ChatColor.DARK_GRAY;
 
     private final int pearlCooldown;
     private int pearlCooldownCounter = 0;

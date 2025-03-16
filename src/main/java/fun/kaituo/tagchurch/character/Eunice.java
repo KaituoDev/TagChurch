@@ -2,6 +2,7 @@ package fun.kaituo.tagchurch.character;
 
 import fun.kaituo.tagchurch.state.HuntState;
 import fun.kaituo.tagchurch.util.Human;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -12,7 +13,7 @@ import org.bukkit.potion.PotionEffectType;
 public class Eunice extends Human {
     public static final String displayName = "尤妮丝";
     public static final String chooseMessage = "很好，让我们一起守护平等而纯洁的世界吧！";
-    public static final String color = "§f";
+    public static final ChatColor color = ChatColor.WHITE;
 
     private final int duration;
     private final int speedAmplifier;

@@ -40,7 +40,7 @@ public class LootChest {
         shulker.setInvisible(true);
         AttributeInstance attribute = shulker.getAttribute(Attribute.GENERIC_SCALE);
         if (attribute != null) {
-            attribute.setBaseValue(0.875);
+            attribute.setBaseValue(0.87);
         }
 
         taskIds.add(Bukkit.getScheduler().scheduleSyncRepeatingTask(TagChurch.inst(), this::updateColor, 1, 1));

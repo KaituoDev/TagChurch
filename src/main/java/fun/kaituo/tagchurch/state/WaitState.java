@@ -167,8 +167,8 @@ public class WaitState implements GameState, Listener {
             Class<? extends PlayerData> choiceClass = game.playerCharacterChoices.get(p.getUniqueId());
             if (sign.getCharacterClass().equals(choiceClass)) {
                 sign.getTeam().addPlayer(p);
+                break;
             }
-            break;
         }
     }
 
@@ -181,8 +181,8 @@ public class WaitState implements GameState, Listener {
             Class<? extends PlayerData> choiceClass = game.playerCharacterChoices.get(p.getUniqueId());
             if (sign.getCharacterClass().equals(choiceClass)) {
                 sign.getTeam().removePlayer(p);
+                break;
             }
-            break;
         }
     }
 

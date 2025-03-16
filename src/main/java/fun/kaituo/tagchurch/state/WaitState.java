@@ -168,6 +168,7 @@ public class WaitState implements GameState, Listener {
             if (sign.getCharacterClass().equals(choiceClass)) {
                 sign.getTeam().addPlayer(p);
             }
+            break;
         }
     }
 
@@ -176,6 +177,13 @@ public class WaitState implements GameState, Listener {
         p.getInventory().clear();
         p.removePotionEffect(PotionEffectType.RESISTANCE);
         p.removePotionEffect(PotionEffectType.SATURATION);
+        for (ChooseCharacterSign sign : signs) {
+            Class<? extends PlayerData> choiceClass = game.playerCharacterChoices.get(p.getUniqueId());
+            if (sign.getCharacterClass().equals(choiceClass)) {
+                sign.getTeam().removePlayer(p);
+            }
+            break;
+        }
     }
 
     @Override

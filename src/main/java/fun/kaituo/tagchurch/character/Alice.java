@@ -4,6 +4,7 @@ import fun.kaituo.tagchurch.TagChurch;
 import fun.kaituo.tagchurch.state.HuntState;
 import fun.kaituo.tagchurch.util.Corpse;
 import fun.kaituo.tagchurch.util.Human;
+import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -43,6 +44,10 @@ public class Alice extends Human {
             return;
         }
         if (usedRevival) {
+            return;
+        }
+        // Only revive if hand is empty.
+        if (p.getInventory().getItemInMainHand().getType().equals(Material.AIR)) {
             return;
         }
         Entity entity = e.getRightClicked();

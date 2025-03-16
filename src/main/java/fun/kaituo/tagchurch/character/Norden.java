@@ -2,6 +2,7 @@ package fun.kaituo.tagchurch.character;
 
 import fun.kaituo.tagchurch.TagChurch;
 import fun.kaituo.tagchurch.util.Human;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -11,7 +12,7 @@ import org.bukkit.potion.PotionEffectType;
 public class Norden extends Human {
     public static final String displayName = "诺登";
     public static final String chooseMessage = "欢迎回来，大人。";
-    public static final String color = "§f";
+    public static final ChatColor color = ChatColor.WHITE;
 
     public Norden(Player p) {
         super(p);

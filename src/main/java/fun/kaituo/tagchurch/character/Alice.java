@@ -4,6 +4,7 @@ import fun.kaituo.tagchurch.TagChurch;
 import fun.kaituo.tagchurch.state.HuntState;
 import fun.kaituo.tagchurch.util.Corpse;
 import fun.kaituo.tagchurch.util.Human;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
@@ -20,7 +21,7 @@ import static fun.kaituo.gameutils.util.ItemUtils.removeItem;
 public class Alice extends Human {
     public static final String displayName = "爱丽丝";
     public static final String chooseMessage = "去寻觅爱的浪漫吧~☆";
-    public static final String color = "§b";
+    public static final ChatColor color = ChatColor.AQUA;
 
 
     private final ItemStack initialItem;

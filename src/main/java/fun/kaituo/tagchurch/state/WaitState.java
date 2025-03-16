@@ -73,7 +73,7 @@ public class WaitState implements GameState, Listener {
                 signs.add(sign);
             }
         } catch (Exception e) {
-            game.getLogger().warning("Failed to scan for kit classes");
+            game.getLogger().warning("Failed to scan for character classes");
             throw new RuntimeException(e);
         }
 
@@ -162,6 +162,13 @@ public class WaitState implements GameState, Listener {
         p.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, -1, 4, false, false));
         p.addPotionEffect(new PotionEffect(PotionEffectType.SATURATION, -1, 0, false, false));
         p.teleport(game.getLocation());
+        // Update player name tag color to the team color
+        for (ChooseCharacterSign sign : signs) {
+            Class<? extends PlayerData> choiceClass = game.playerCharacterChoices.get(p.getUniqueId());
+            if (sign.getCharacterClass().equals(choiceClass)) {
+                sign.getTeam().addPlayer(p);
+            }
+        }
     }
 
     @Override

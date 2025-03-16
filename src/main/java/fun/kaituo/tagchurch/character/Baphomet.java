@@ -4,6 +4,7 @@ import fun.kaituo.tagchurch.TagChurch;
 import fun.kaituo.tagchurch.state.HuntState;
 import fun.kaituo.tagchurch.util.Hunter;
 import fun.kaituo.tagchurch.util.PlayerData;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
@@ -12,7 +13,7 @@ import org.bukkit.event.entity.EntityDamageByEntityEvent;
 public class Baphomet extends Hunter {
     public static final String displayName = "巴风特";
     public static final String chooseMessage = "我也没办法啦，希望你们能理解一下~";
-    public static final String color = "§8";
+    public static final ChatColor color = ChatColor.DARK_GRAY;
 
     public Baphomet(Player p) {
         super(p);

@@ -3,6 +3,7 @@ package fun.kaituo.tagchurch.character;
 import fun.kaituo.tagchurch.TagChurch;
 import fun.kaituo.tagchurch.util.Human;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.GameMode;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
@@ -16,7 +17,7 @@ import static fun.kaituo.gameutils.util.ItemUtils.removeItem;
 public class Victoria extends Human {
     public static final String displayName = "维多利亚";
     public static final String chooseMessage = ".......好了,我们出发吧";
-    public static final String color = "§d";
+    public static final ChatColor color = ChatColor.LIGHT_PURPLE;
 
     private final double radius;
     private final ItemStack maidItem;

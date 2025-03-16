@@ -1,6 +1,7 @@
 package fun.kaituo.tagchurch.character;
 
 import fun.kaituo.tagchurch.util.Human;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -11,7 +12,7 @@ import org.bukkit.potion.PotionEffectType;
 public class CheshireCat extends Human {
     public static final String displayName = "柴郡猫";
     public static final String chooseMessage = "能和你再说上话真是太好了喵~";
-    public static final String color = "§d";
+    public static final ChatColor color = ChatColor.LIGHT_PURPLE;
 
     private final int speedDuration;
     private final int speedAmplifier;
